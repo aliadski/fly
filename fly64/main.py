@@ -186,8 +186,12 @@ def start_http(project: Path, model, port: int, ws_port: int) -> ThreadingHTTPSe
 
 
 def open_dashboard(url: str, project: Path):
-    chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    if os.path.exists(chrome):
+    import shutil
+    candidates = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
+    candidates += [shutil.which(name) or "" for name in
+                   ("google-chrome-stable", "google-chrome", "chromium", "chromium-browser")]
+    chrome = next((path for path in candidates if path and os.path.exists(path)), None)
+    if chrome:
         profile = Path(tempfile.mkdtemp(prefix="chrome-dashboard-", dir=project / "runtime"))
         process = subprocess.Popen([
             chrome, f"--app={url}", f"--user-data-dir={profile}",

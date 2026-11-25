@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import mmap
 import os
+import platform
 import struct
 import time
 import ctypes
@@ -22,9 +23,17 @@ if sys.platform == "darwin":
     _memory_barrier = ctypes.CDLL(None).OSMemoryBarrier
     _memory_barrier.argtypes = []
     _memory_barrier.restype = None
+elif platform.machine().lower() in ("x86_64", "amd64", "i386", "i686"):
+    # x86 is TSO: loads are not reordered with loads and stores are not
+    # reordered with stores, which is all this seqlock needs. Each Python-level
+    # mmap access is an opaque C call, so it is also a compiler barrier.
+    def _memory_barrier():
+        pass
 else:
     def _memory_barrier():
-        raise RuntimeError("Fly64 shared-memory bridge currently targets macOS")
+        raise RuntimeError(
+            f"Fly64 shared-memory bridge has no memory barrier for {sys.platform}/{platform.machine()}"
+        )
 
 
 class SharedBridge:

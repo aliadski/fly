@@ -466,7 +466,7 @@ new file mode 100644
 index 0000000..7e39dc9
 --- /dev/null
 +++ b/src/pc/fly64_vision.c
-@@ -0,0 +1,226 @@
+@@ -0,0 +1,232 @@
 +/* Observational six-face renderer. Game logic runs once, before this function.
 + * Supported scene: Bob-omb Battlefield. No menus/HUD/Mario self mesh. */
 +#include <math.h>
@@ -475,8 +475,14 @@ index 0000000..7e39dc9
 +#include <stdlib.h>
 +#include <string.h>
 +#include <time.h>
++#if defined(OSX_BUILD) || defined(_WIN32)
 +#define GLEW_STATIC
 +#include <GL/glew.h>
++#else
++/* Linux: libGL exports GL 3.0 entry points; same path as gfx_opengl.c. */
++#define GL_GLEXT_PROTOTYPES 1
++#include <SDL2/SDL_opengl.h>
++#endif
 +#include "fly64_vision.h"
 +#include "fly64_bridge.h"
 +#include "gfx/gfx_pc.h"

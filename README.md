@@ -45,6 +45,19 @@ This might take a while to download etc.
 You need your own **unmodified US Super Mario 64 .z64 ROM**. It is not included
 and can live anywhere on your computer; pass its path after `--rom`.
 
+### Linux (x86-64)
+
+Tested on Ubuntu with GCC 15 and Python 3.14. Homebrew is not used; install the
+build dependencies once, then run the same command as above:
+
+```sh
+sudo apt install build-essential pkg-config python3-venv libsdl2-dev libglew-dev
+./run-fly64 --rom "/path/to/base_mario_64_rom.us.z64"
+```
+
+The dashboard opens in Google Chrome or Chromium if one is installed, otherwise
+in your default browser. `scripts/record_demo.sh` is still macOS-only.
+
 ## Stop it
 
 Click the game, then press **Escape**. Or press **Ctrl+C** in Terminal.

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -56,7 +57,7 @@ def test_replay_all_ticks(tmp_path):
 
 def test_native_bridge(tmp_path):
     target = tmp_path / "bridge-test"
-    subprocess.run(["clang", "-I", str(ROOT / "tests/stubs"), str(ROOT / "tests/bridge_harness.c"), "-o", str(target)], check=True)
+    subprocess.run([os.environ.get("CC", "cc"), "-I", str(ROOT / "tests/stubs"), str(ROOT / "tests/bridge_harness.c"), "-o", str(target)], check=True)
     subprocess.run([str(target)], check=True)
     with SharedBridge(tmp_path / "actual-clock.bin") as bridge:
         bridge.write_control(-35, 67, True)

@@ -35,6 +35,15 @@ done
 
 mkdir -p "$PROJECT_DIR/runtime" "$PROJECT_DIR/artifacts" "$PROJECT_DIR/.cache"
 
+if [[ -z "$PYTHON_BIN" && "$(uname -s)" == Linux ]]; then
+  # Linux: use the system interpreter (needs >= 3.12 and the venv module,
+  # e.g. `sudo apt install python3-venv` on Debian/Ubuntu).
+  PYTHON_BIN="$(command -v python3)"
+  if ! "$PYTHON_BIN" -c 'import sys, venv, ensurepip; sys.exit(sys.version_info < (3, 12))' 2>/dev/null; then
+    echo "Fly64 needs Python >= 3.12 with venv (on Ubuntu: sudo apt install python3 python3-venv)." >&2
+    exit 2
+  fi
+fi
 if [[ -z "$PYTHON_BIN" ]]; then
   if [[ -x "/opt/homebrew/opt/python@3.14/bin/python3.14" ]]; then
     PYTHON_BIN="/opt/homebrew/opt/python@3.14/bin/python3.14"
